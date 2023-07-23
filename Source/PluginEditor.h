@@ -2,6 +2,7 @@
 
 // include first
 #include "PluginProcessor.h"
+#include "AdsrComponent.h"
 
 #include "juce_audio_utils/juce_audio_utils.h"
 #include "juce_audio_basics/juce_audio_basics.h"
@@ -25,11 +26,7 @@ private:
     juce::MidiKeyboardState mKeyBoardState;
     juce::MidiKeyboardComponent mKeyboardComponent;
 
-    // ADSR UI
-    juce::OwnedArray<juce::Slider> mEnvControls;
-    // juce::OwnedArray<juce::AudioProcessorValueTreeState::SliderAttachment> mEnvAttachments;
-    juce::Rectangle<int> mComponentBounds;
-    juce::Rectangle<int> mSliderBounds;
+    std::unique_ptr<AdsrComponent> mAdsrComponent = std::make_unique<AdsrComponent>(processorRef);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FmFourEditor)
 };
