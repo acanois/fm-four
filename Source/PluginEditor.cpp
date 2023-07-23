@@ -2,7 +2,7 @@
 #include "PluginProcessor.h"
 
 //==============================================================================
-PluginEditor::PluginEditor (PluginProcessor& p)
+FmFourEditor::FmFourEditor (FmFourProcessor& p)
     : AudioProcessorEditor (&p), processorRef (p)
 {
     juce::ignoreUnused (processorRef);
@@ -12,13 +12,13 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     setSize (400, 300);
 }
 
-PluginEditor::~PluginEditor()
+FmFourEditor::~FmFourEditor()
 {
 
 }
 
 //==============================================================================
-void PluginEditor::paint (juce::Graphics& g)
+void FmFourEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
@@ -28,7 +28,7 @@ void PluginEditor::paint (juce::Graphics& g)
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void PluginEditor::resized()
+void FmFourEditor::resized()
 {
     // lay out the positions of your components
 }
