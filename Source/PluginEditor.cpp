@@ -2,33 +2,53 @@
 #include "PluginProcessor.h"
 
 //==============================================================================
-FmFourEditor::FmFourEditor (FmFourProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p)
+FmFourEditor::FmFourEditor(FmFourProcessor& p)
+    : AudioProcessorEditor(&p), processorRef(p), mKeyboardComponent(mKeyBoardState, juce::MidiKeyboardComponent::horizontalKeyboard)
 {
-    juce::ignoreUnused (processorRef);
+    juce::ignoreUnused(processorRef);
 
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    mSliderBounds.setBounds (0, 100, 100, 100);
+    mComponentBounds.setBounds (0, 0, (mSliderBounds.getWidth() * 4), (mSliderBounds.getHeight()));
+
+    std::array<std::string, 4> paramNames = { "attack", "decay", "sustain", "release" };
+    
+    for (auto paramName : paramNames) {
+        auto* envControl = new juce::Slider(juce::Slider::RotaryVerticalDrag, juce::Slider::TextBoxBelow);
+        // auto* envAttachment = new juce::AudioProcessorValueTreeState::SliderAttachment(p.getValueTree(), paramName, *envControl);
+        mEnvControls.add(envControl);
+        // mEnvAttachments.add(envAttachment);
+        addAndMakeVisible(envControl);
+    }
+
+    addAndMakeVisible(mKeyboardComponent);
+
+    setSize(1280, 720);
 }
 
-FmFourEditor::~FmFourEditor()
-{
-
+FmFourEditor::~FmFourEditor() {
 }
 
 //==============================================================================
-void FmFourEditor::paint (juce::Graphics& g)
-{
+void FmFourEditor::paint (juce::Graphics& g) {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void FmFourEditor::resized()
-{
-    // lay out the positions of your components
+void FmFourEditor::resized() {
+    auto area = getLocalBounds();
+    
+    auto xPos = area.getX();
+    for (juce::Slider* control : mEnvControls) {
+        control->setBounds(
+            xPos, 
+            mComponentBounds.getY(), 
+            mSliderBounds.getWidth(), 
+            mSliderBounds.getHeight()
+        );
+        xPos += (mSliderBounds.getX() + mSliderBounds.getWidth() + 10);
+    }
+
+    juce::Rectangle<int> componentBounds;
+    componentBounds.setBounds(100, 100, 100, 100);
+    mKeyboardComponent.setBounds(area.removeFromBottom(80).reduced(8));
 }
